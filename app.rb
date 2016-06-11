@@ -7,6 +7,8 @@ require 'rack/protection'
 require 'bcrypt'
 
 Dotenv.load!
+
+# Database
 database = ENV.fetch("WORKLOG_DATABASE")
 user = ENV.fetch("PG_USER")
 password = ENV.fetch("PG_PASSWORD")
@@ -18,7 +20,16 @@ rescue Exception
   DB = Sequel.connect(adapter: "postgres", host: host, user: user, password: password)
 end
 
+if ENV['RACK_ENV'] == 'development'
+  require 'logger'
+  DB.loggers << Logger.new($stdout)
+end
+
 Sequel.extension :seed
+
+# Others
+
+VERSION = File.read('./VERSION').strip
 
 module App
   class Main < Roda
@@ -31,6 +42,8 @@ module App
     plugin :multi_route
     plugin :json
     plugin :all_verbs
+    plugin :environments
+    puts environment
 
     Sequel::Model.plugin :validation_helpers
     # Default Timestamps
@@ -55,7 +68,7 @@ module App
         {
           name: "UBrand WorkLog Assistant",
           tagline: "Simple Logging for UBrand Team",
-          version: "0.0.1"
+          version: VERSION
         }
       end
     end

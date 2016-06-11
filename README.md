@@ -43,3 +43,8 @@ PG_PASSWORD=""
 PG_HOST="127.0.0.1"
 WORKLOG_DATABASE="worklogs"
 ```
+
+### Tham khảo
+
+- [Roda Sequel Stack](https://github.com/jeremyevans/roda-sequel-stack)
+- [Up and Going in Roda: A Simple Ruby Blog](http://mrcook.uk/simple-roda-blog-tutorial)

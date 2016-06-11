@@ -22,7 +22,20 @@ namespace :db do
 
   desc "Database seeder"
   task :seed => :app do
+    # Drop all in database
+    DB.run("
+      DO
+      $do$
+      BEGIN
+        IF EXISTS(SELECT relname FROM pg_class where relname = 'schema_seeds') THEN
+          DELETE from schema_seeds;
+        END IF;
+      END
+      $do$
+    ")
+    Sequel::Seed.setup(ENV['RACK_ENV'])
     Sequel::Seeder.apply(DB, "./migrate/seed/")
+    puts "<= db:seed seeded"
   end
 
   desc "Create the database"
