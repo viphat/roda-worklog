@@ -1,13 +1,16 @@
 source "https://rubygems.org"
 
 gem 'rake'
-gem 'slim'
 gem 'roda'
-gem 'dotenv'
-
 gem 'rack'
 gem 'rack-protection'
 gem 'rack_csrf'
+
+gem 'slim'
+gem 'dotenv'
+
+gem "pg"
+gem "sequel"
 
 gem 'puma'
 gem 'tilt-jbuilder'
