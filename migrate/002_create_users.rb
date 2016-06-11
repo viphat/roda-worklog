@@ -8,7 +8,9 @@ Sequel.migration do
       String :email, unique: true, null: false, index: true
       String :password, null: false
       String :role, null: false, default: 'member'
-      foreign_key :team_id, :teams, on_delete: :cascade, on_update: :cascade
+      foreign_key :team_id, :teams, on_delete: :cascade, on_update: :cascade, null: false
+      DateTime :created_at, null: false
+      DateTime :updated_at, null: false
     end
   end
 end

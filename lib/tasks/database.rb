@@ -20,12 +20,15 @@ namespace :db do
   desc "Perform migration up to latest migration available"
   task :migrate => "db:migrate:up"
 
+  desc "Database seeder"
+  task :seed => :app do
+    Sequel::Seeder.apply(DB, "./migrate/seed/")
+  end
+
   desc "Create the database"
   task :create => :app do
-    config = Sequel::Model.db.opts
-    config[:charset] = "utf8" unless config[:charset]
-    puts "=> Creating database '#{config[:database]}'"
-    create_db(config)
+    puts "=> Creating database #{ENV.fetch('WORKLOG_DATABASE')}"
+    create_db()
     puts "<= db:create executed"
   end
 
@@ -40,15 +43,15 @@ namespace :db do
 
 end
 
-def self.create_db(config)
+def self.create_db()
   environment = {}
-  environment["PGUSER"] = config[:user]
-  environment["PGPASSWORD"] = config[:password]
+  environment["PGUSER"] = ENV.fetch("PG_USER")
+  environment["PGPASSWORD"] = ENV.fetch("PG_PASSWORD")
   arguments = []
-  arguments << "--encoding=#{config[:charset]}" if config[:charset]
-  arguments << "--host=#{config[:host]}" if config[:host]
-  arguments << "--username=#{config[:user]}" if config[:user]
-  arguments << config[:database]
+  arguments << "--encoding=utf-8"
+  arguments << "--host=#{ENV.fetch('PG_HOST')}"
+  arguments << "--username=#{ENV.fetch('PG_USER')}"
+  arguments << ENV.fetch("WORKLOG_DATABASE")
   Process.wait Process.spawn(environment, "createdb", *arguments)
 end
 
