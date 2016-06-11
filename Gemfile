@@ -21,4 +21,5 @@ gem 'bcrypt'
 
 group :development, :test do
   gem 'rerun', require: false
+  gem 'pry'
 end

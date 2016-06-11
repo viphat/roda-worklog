@@ -31,6 +31,12 @@ Auto reload khi codebase của Project có thay đổi - **rerun**:
 rerun -- rackup --port 3000 config.ru
 ```
 
+IRB:
+
+```
+
+```
+
 #### Environment
 
 Sử dụng Dotenv để load một số thông tin từ file .env:

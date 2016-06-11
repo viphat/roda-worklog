@@ -43,7 +43,6 @@ module App
     plugin :json
     plugin :all_verbs
     plugin :environments
-    puts environment
 
     Sequel::Model.plugin :validation_helpers
     # Default Timestamps
