@@ -7,15 +7,23 @@ class User < Sequel::Model
 
   def validate
     super
+    validates_unique :auth_token
     validates_presence :original_password
-    validates_length_range 6..15, :original_password
+    validates_length_range 4..15, :original_password
     validates_presence :password_confirmation
     errors.add(:password_confirmation, "Mật khẩu xác nhận không khớp") if original_password != password_confirmation
   end
 
   def self.authenticate(email, password)
     user = filter(Sequel.function(:lower, :email) => Sequel.function(:lower, email)).first
-    user && user.has_password?(password) ? user : nil
+    res = user && user.has_password?(password) ? user : nil
+    User.where(id: user.id).update(auth_token: SecureRandom.hex) if res
+    res
+  end
+
+  def self.authenticate_or_request_with_token(token)
+    ap token
+    User.where(auth_token: token).first
   end
 
   def has_password?(password)

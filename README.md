@@ -56,3 +56,4 @@ WORKLOG_DATABASE="worklogs"
 
 - [Roda Sequel Stack](https://github.com/jeremyevans/roda-sequel-stack)
 - [Up and Going in Roda: A Simple Ruby Blog](http://mrcook.uk/simple-roda-blog-tutorial)
+- [Sequel Cheat sheet](https://github.com/jeremyevans/sequel/blob/master/doc/cheat_sheet.rdoc)

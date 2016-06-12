@@ -35,12 +35,15 @@ module App
     use Rack::Protection, except: :http_origin
     use Rack::Protection::HttpOrigin, origin_whitelist: ["chrome-extension://aicmkgpgakddgnaphhhpliifpcfhicfo", "localhost:3000"]
 
-    plugin :csrf
+    # plugin :csrf - Disable CSRF due to API
     plugin :render, engine: "slim"
+    plugin :render, engine: "jbuilder", ext: 'json.jbuilder', views: 'views/api'
     plugin :multi_route
     plugin :json
     plugin :all_verbs
     plugin :environments
+    plugin :head # http://mrcook.uk/why-enable-roda-head-plugin
+    plugin :default_headers, 'Content-Type'=>'text/json'
 
     if environment == 'development'
       DB.loggers << Logger.new($stdout)
