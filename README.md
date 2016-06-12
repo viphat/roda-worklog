@@ -31,13 +31,15 @@ Auto reload khi codebase của Project có thay đổi - **rerun**:
 rerun -- rackup --port 3000 config.ru
 ```
 
-IRB:
+**IRB** - Ruby console:
 
 ```
-
+rake irb_dev
+rake irb_test
+rake irb_prod
 ```
 
-#### Environment
+#### Environment Variables
 
 Sử dụng Dotenv để load một số thông tin từ file .env:
 

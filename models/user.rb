@@ -13,6 +13,15 @@ class User < Sequel::Model
     errors.add(:password_confirmation, "Mật khẩu xác nhận không khớp") if original_password != password_confirmation
   end
 
+  def self.authenticate(email, password)
+    user = filter(Sequel.function(:lower, :email) => Sequel.function(:lower, email)).first
+    user && user.has_password?(password) ? user : nil
+  end
+
+  def has_password?(password)
+    BCrypt::Password.new(self.password) == password
+  end
+
   def before_save
     super
     encrypt_password

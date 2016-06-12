@@ -19,16 +19,16 @@ irb = proc do |env|
 end
 
 desc "Open irb shell in test mode"
-task :test_irb do
+task :irb_test do
   irb.call('test')
 end
 
 desc "Open irb shell in development mode"
-task :dev_irb do
+task :irb_dev do
   irb.call('development')
 end
 
 desc "Open irb shell in production mode"
-task :prod_irb do
+task :irb_prod do
   irb.call('production')
 end

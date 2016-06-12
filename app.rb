@@ -5,6 +5,8 @@ require 'sequel'
 require 'sequel/extensions/seed'
 require 'rack/protection'
 require 'bcrypt'
+require 'logger'
+require 'awesome_print'
 
 Dotenv.load!
 
@@ -20,11 +22,6 @@ rescue Exception
   DB = Sequel.connect(adapter: "postgres", host: host, user: user, password: password)
 end
 
-if ENV['RACK_ENV'] == 'development'
-  require 'logger'
-  DB.loggers << Logger.new($stdout)
-end
-
 Sequel.extension :seed
 
 # Others
@@ -35,7 +32,8 @@ module App
   class Main < Roda
     raise 'Ruby should be >= 2.3' unless RUBY_VERSION.to_f >= 2.3
     use Rack::Session::Cookie, :secret => ENV.fetch("WORKLOG_SECRET")
-    use Rack::Protection
+    use Rack::Protection, except: :http_origin
+    use Rack::Protection::HttpOrigin, origin_whitelist: ["chrome-extension://aicmkgpgakddgnaphhhpliifpcfhicfo", "localhost:3000"]
 
     plugin :csrf
     plugin :render, engine: "slim"
@@ -43,6 +41,12 @@ module App
     plugin :json
     plugin :all_verbs
     plugin :environments
+
+    if environment == 'development'
+      DB.loggers << Logger.new($stdout)
+      logger = Logger.new(STDOUT)
+      use Rack::CommonLogger, logger
+    end
 
     Sequel::Model.plugin :validation_helpers
     # Default Timestamps
@@ -67,6 +71,7 @@ module App
         {
           name: "UBrand WorkLog Assistant",
           tagline: "Simple Logging for UBrand Team",
+          csrf_token: csrf_token,
           version: VERSION
         }
       end

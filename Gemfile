@@ -16,7 +16,7 @@ gem "sequel-seed"
 gem 'puma'
 gem 'tilt-jbuilder'
 gem 'mutations'
-
+gem 'awesome_print'
 gem 'bcrypt'
 
 group :development, :test do
