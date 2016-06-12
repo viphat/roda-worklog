@@ -2,9 +2,11 @@ App::Main.route('users', 'api') do |r|
   r.get 'info' do
     # ap r.env
     token = r.env["HTTP_AUTHORIZATION"]
-    @user = User.authenticate_or_request_with_token(token.gsub('Bearer ',''))
+    access_token_validate(token.gsub('Bearer ',''))
+    require_current_user
     render('users/info')
   end
+
   r.post 'login' do
     # ap r.env
     response.status = 200
@@ -23,4 +25,5 @@ App::Main.route('users', 'api') do |r|
       }
     end
   end
+
 end

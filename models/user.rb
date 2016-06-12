@@ -1,8 +1,8 @@
 # ./models/user.rb
 
 class User < Sequel::Model
-  # User.plugin :timestamps, create: :created_at, update: :updated_at, update_on_create: true
   one_to_many :logs, on_delete: :cascade
+  many_to_one :team
   attr_accessor :original_password, :password_confirmation
 
   def validate

@@ -28,7 +28,7 @@ bundle exec puma -p 3000 -e production
 Auto reload khi codebase của Project có thay đổi - **rerun**:
 
 ```
-rerun -- rackup --port 3000 config.ru
+rerun --pattern "**/*.{rb, yml, slim, jbuilder}" -- rackup --port 3000 config.ru
 ```
 
 **IRB** - Ruby console:

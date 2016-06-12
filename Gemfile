@@ -4,7 +4,7 @@ gem 'rake'
 gem 'roda'
 gem 'rack'
 gem 'rack-protection'
-gem 'rack_csrf'
+# gem 'rack_csrf'
 
 gem 'slim'
 gem 'dotenv'
@@ -15,7 +15,7 @@ gem "sequel-seed"
 
 gem 'puma'
 gem 'tilt-jbuilder'
-gem 'mutations'
+# gem 'mutations'
 gem 'awesome_print'
 gem 'bcrypt'
 
