@@ -52,8 +52,8 @@ module App
       response.status = 500
       log_message = "\n#{e.class} (#{e.message}):\n"
       log_message << "  " << e.backtrace.join("\n  ") << "\n\n" if e.backtrace
-      puts log_message
       if ENV.fetch('RACK_ENV') == 'development'
+        puts log_message
         json = { class: e.class, message: e.message, backtrace: e.backtrace.join("\n  ") }
       else
         json = { message: 'Internal Server Error.' }
@@ -61,7 +61,12 @@ module App
       json
     end
 
-    if environment == 'development'
+    if environment == 'production'
+      log_file = "./logs/#{environment}.log"
+      DB.loggers << Logger.new(log_file)
+      logger = Logger.new(log_file)
+      use Rack::CommonLogger, logger
+    else
       DB.loggers << Logger.new($stdout)
       logger = Logger.new(STDOUT)
       use Rack::CommonLogger, logger
