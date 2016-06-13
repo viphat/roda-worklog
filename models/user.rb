@@ -21,6 +21,10 @@ class User < Sequel::Model
     res
   end
 
+  def self.find_by_slack_user_id(slack_user_id)
+    user = User.where(slack_user_id: slack_user_id).first
+  end
+
   def update_slack_user_id(slack_user_id)
     User.where(id: self.id).update(slack_user_id: slack_user_id)
   end

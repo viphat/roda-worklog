@@ -1,13 +1,14 @@
 ### Intro
 
-Ứng dụng nhỏ bằng Ruby, sử dụng **Roda** (Routing tree web toolkit - dựa trên **CUBA** và inspired bởi **Sinatra**). UBrand Worklogs Assistant cung cấp các API để Dev Team của UBrand có thể log công việc mình đang làm bất cứ lúc nào bằng cách chat với Slack Bot. (Inspired by [EngineerMatchingLog](https://www.engineermatching.com))
+Ứng dụng Worklog viết bằng Ruby, sử dụng **Roda** (Routing tree web toolkit - dựa trên **CUBA** và **Sinatra**).
 
-Logs sẽ được tổng hợp và gửi đến Tech Lead/Project Manager hàng tuần.
+**UBrand Worklog Assistant** cung cấp các API để Dev Team của UBrand có thể log công việc mình đang làm bất cứ lúc nào bằng gửi lệnh qua Slack Commands. (Inspired by [EngineerMatchingLog](https://www.engineermatching.com))
+
+Worklog sẽ được tổng hợp và gửi Mail đến Tech Lead/Project Manager vào thứ 6 hàng tuần.
 
 ### TODO
 
-- Slack Bot??
-- Tương tác với JIRA Cloud??
+- Tương tác với JIRA Cloud?? (Chưa tìm hiểu, không biết JIRA Cloud có cung cấp API không)
 
 ### How to run this app
 
@@ -44,12 +45,13 @@ rake irb_prod
 Sử dụng Dotenv để load một số thông tin từ file .env:
 
 ```
-WORKLOG_SECRET="your_secret_hash"
+WORKLOG_SECRET="your\_secret\_hash"
 RACK_ENV="development"
 PG_USER="postgres"
 PG_PASSWORD=""
 PG_HOST="127.0.0.1"
 WORKLOG_DATABASE="worklogs"
+SLACK_TOKEN="YOUR\_SLACK\_COMMAND\_TOKEN"
 ```
 
 ### Tham khảo

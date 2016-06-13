@@ -1,6 +1,6 @@
 App::Main.route('users', 'api') do |r|
+
   r.get 'info' do
-    # ap r.env
     token = r.env["HTTP_AUTHORIZATION"]
     access_token_validate(token.gsub('Bearer ',''))
     require_current_user
@@ -8,20 +8,21 @@ App::Main.route('users', 'api') do |r|
   end
 
   r.post 'verify' do
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) if r["text"].nil?
     response.status = 200
     slack_user_id = r["user_id"]
     input = r["text"]
     email = input.split(" ")[0]
     password = input.split(" ")[1]
-    if r['token'] == 'pVIdyLwN53lnh4E4UQxPflrg' && user = User.authenticate(email, password)
+    if r['token'] == SLACK_TOKEN && user = User.authenticate(email, password)
       user.update_slack_user_id(slack_user_id)
       {
-        text: "Verify successful!"
+        text: "Xác thực thành công!"
       }
     else
       response.status = 403
       {
-        text: "Verify unsuccessful!"
+        text: "Xác thực không thành công!"
       }
     end
   end
@@ -31,7 +32,6 @@ App::Main.route('users', 'api') do |r|
     response.status = 200
     if user = User.authenticate(r["email"], r["password"])
       session[:user_id] = user.id
-      # puts user.id
       {
         success: true,
         message: "Login successful!",
