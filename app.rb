@@ -68,8 +68,7 @@ module App
     end
 
     Sequel::Model.plugin :validation_helpers
-    # Default Timestamps
-    Sequel::Model.plugin :timestamps, create: :created_at, update: :updated_at, update_on_create: true
+    Sequel::Model.plugin :timestamps, create: :created_at, update: :updated_at, update_on_create: true # Default Timestamps
 
     Dir['./routes/**/*.rb'].each { |f| require f }
     begin
