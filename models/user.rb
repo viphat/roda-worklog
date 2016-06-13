@@ -21,6 +21,10 @@ class User < Sequel::Model
     res
   end
 
+  def update_slack_user_id(slack_user_id)
+    self.slack_user_id = slack_user_id
+  end
+
   def self.authenticate_or_request_with_token(token)
     ap token
     User.where(auth_token: token).first
@@ -34,7 +38,6 @@ class User < Sequel::Model
     super
     encrypt_password
   end
-
 
 private
 

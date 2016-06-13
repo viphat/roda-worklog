@@ -14,6 +14,7 @@ App::Main.route('users', 'api') do |r|
     email = input.split(" ")[0]
     password = input.split(" ")[1]
     if r['token'] == 'pVIdyLwN53lnh4E4UQxPflrg' && user = User.authenticate(email, password)
+      user.update_slack_user_id(slack_user_id)
       {
         text: "Verify successful!"
       }

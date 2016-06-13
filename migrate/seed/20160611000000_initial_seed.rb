@@ -1,4 +1,4 @@
-Sequel.seed(:development, :test) do
+Sequel.seed(:development, :production, :test) do
   def run
     team = Team.create(
       name: "Developer Team"
