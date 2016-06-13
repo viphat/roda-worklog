@@ -22,11 +22,10 @@ class User < Sequel::Model
   end
 
   def update_slack_user_id(slack_user_id)
-    self.slack_user_id = slack_user_id
+    User.where(id: self.id).update(slack_user_id: slack_user_id)
   end
 
   def self.authenticate_or_request_with_token(token)
-    ap token
     User.where(auth_token: token).first
   end
 
