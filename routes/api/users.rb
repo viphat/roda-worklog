@@ -13,7 +13,7 @@ App::Main.route('users', 'api') do |r|
     input = r["text"]
     email = input.split(" ")[0]
     password = input.split(" ")[1]
-    if user = User.authenticate(email, password)
+    if r['token'] == 'pVIdyLwN53lnh4E4UQxPflrg' && user = User.authenticate(email, password)
       {
         text: "Verify successful!"
       }
