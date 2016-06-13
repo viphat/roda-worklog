@@ -24,7 +24,8 @@ rescue Exception
 end
 
 Sequel.extension :seed
-SLACK_TOKEN = ENV.fetch("SLACK_TOKEN")
+SLACK_TOKEN_FOR_VERIFY = ENV.fetch("SLACK_TOKEN_FOR_VERIFY")
+SLACK_TOKEN_FOR_POST_LOGS = ENV.fetch("SLACK_TOKEN_FOR_POST_LOGS")
 
 Dir[__dir__ + '/helpers/*.rb'].each {|file| require file }
 # Others

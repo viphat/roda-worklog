@@ -16,7 +16,8 @@ App::Main.route('logs', 'api') do |r|
     #   id: log.id
     # }
 
-    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if r["content"].nil?
+    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if r["text"].nil?
+    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if r["token"] != SLACK_TOKEN_FOR_POST_LOGS
     response.status = 200
     slack_user_id = r["user_id"]
     user = User.find_by_slack_user_id(slack_user_id)
