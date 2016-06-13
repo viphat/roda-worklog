@@ -62,7 +62,7 @@ module App
     end
 
     if environment == 'production'
-      log_file = "./logs/#{environment}.log"
+      log_file = "./log/#{environment}.log"
       DB.loggers << Logger.new(log_file)
       logger = Logger.new(log_file)
       use Rack::CommonLogger, logger

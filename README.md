@@ -20,7 +20,7 @@ bundle exec rackup
 Hoặc sử dụng cú pháp của **Puma**:
 
 ```
-bundle exec puma -p 3000 -e production
+bundle exec puma --config puma.rb -p 3000 -e production
 ```
 
 #### Development
