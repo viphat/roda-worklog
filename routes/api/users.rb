@@ -17,12 +17,12 @@ App::Main.route('users', 'api') do |r|
     if r['token'] == SLACK_TOKEN_FOR_VERIFY && user = User.authenticate(email, password)
       user.update_slack_user_id(slack_user_id)
       {
-        text: "Xác thực thành công!"
+        text: "Xác thực thành công, Bạn có thể gửi worklog bằng lệnh /log!"
       }
     else
       response.status = 403
       {
-        text: "Xác thực không thành công!"
+        text: "Xác thực không thành công, Vui lòng thử lại!"
       }
     end
   end

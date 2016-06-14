@@ -22,7 +22,7 @@ class User < Sequel::Model
   end
 
   def self.find_by_slack_user_id(slack_user_id)
-    user = User.where(slack_user_id: slack_user_id).first
+    User.where(slack_user_id: slack_user_id).first
   end
 
   def update_slack_user_id(slack_user_id)
@@ -40,6 +40,12 @@ class User < Sequel::Model
   def before_save
     super
     encrypt_password
+  end
+
+  def before_destroy
+    super
+    # Chỉ cho phép xóa Log trong 1 ngày gần nhất
+    return false unless self.created_at.to_i + 86400 > Time.now
   end
 
 private

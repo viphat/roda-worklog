@@ -1,6 +1,58 @@
 App::Main.route('logs', 'api') do |r|
+  r.get do |id|
+    token = r.env["HTTP_AUTHORIZATION"]
+    access_token_validate(token.gsub('Bearer ',''))
+    require_current_user
+    logs = Log.where(user_id: @current_user.id).first(10)
+    results = []
+    logs.each do |log|
+      results.push(
+        {
+          id: log.id,
+          user_id: log.user_id,
+          content: log.content,
+          created_at: log.created_at
+        }
+      )
+    end
+    response.status = 200
+    {
+      success: true,
+      logs: results
+    }
+  end
+
+  r.put ':id' do |id|
+    token = r.env["HTTP_AUTHORIZATION"]
+    access_token_validate(token.gsub('Bearer ',''))
+    require_current_user
+    log = Log.where(id: id, user_id: @current_user.id ).first
+    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if log.nil?
+    log[:content] = r["content"]
+    halt_request(400, { error: "Yêu cầu cập nhật worklog không thành công!" }) unless log.save_changes
+    response.status = 200
+    {
+      success: true,
+      text: "Cập nhật worklog thành công."
+    }
+  end
+
+  r.destroy ':id' do |id|
+    token = r.env["HTTP_AUTHORIZATION"]
+    access_token_validate(token.gsub('Bearer ',''))
+    require_current_user
+    log = Log.where(id: id, user_id: @current_user.id).first
+    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if log.nil?
+    halt_request(400, { error: "Yêu cầu xóa worklog thất bại." }) unless log.destroy
+    response.status = 200
+    {
+      success: true,
+      text: "Xóa worklog thành công."
+    }
+  end
+
   r.post do
-    # Không tương thích với Slack
+    # Không dùng được với Slack commands
     # halt_request(400, { error: "Yêu cầu không hợp lệ." }) if r["content"].nil?
     # token = r.env["HTTP_AUTHORIZATION"]
     # access_token_validate(token.gsub('Bearer ',''))
@@ -28,7 +80,8 @@ App::Main.route('logs', 'api') do |r|
     )
     halt_request(500, { error: "Internal Server Error." }) if log.nil?
     {
-      text: "Server đã nhận được log của bạn."
+      text: "Server đã nhận được worklog của bạn.\n
+      ID của worklog vừa tạo là **#{log.id}**.\n"
     }
   end
 end
