@@ -21,7 +21,7 @@ bundle exec rackup
 Hoặc sử dụng cú pháp của **Puma**:
 
 ```
-bundle exec puma -C puma.rb -e production
+nohup bundle exec puma -C puma.rb -e production >> log/production.log 2>&1 &
 ```
 
 #### Development

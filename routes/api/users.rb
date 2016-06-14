@@ -14,15 +14,16 @@ App::Main.route('users', 'api') do |r|
     input = r["text"]
     email = input.split(" ")[0]
     password = input.split(" ")[1]
-    if r['token'] == SLACK_TOKEN_FOR_VERIFY && user = User.authenticate(email, password)
+    user = User.authenticate(email, password)
+    if r['token'] == SLACK_TOKEN_FOR_VERIFY && user
       user.update_slack_user_id(slack_user_id)
       {
-        text: "Xác thực thành công, Bạn có thể gửi worklog bằng lệnh /log!"
+        text: "Xác thực thành công. Bạn có thể gửi worklog bằng lệnh /log!"
       }
     else
       response.status = 403
       {
-        text: "Xác thực không thành công, Vui lòng thử lại!"
+        text: "Xác thực không thành công. Vui lòng thử lại!"
       }
     end
   end
@@ -32,6 +33,7 @@ App::Main.route('users', 'api') do |r|
     response.status = 200
     if user = User.authenticate(r["email"], r["password"])
       session[:user_id] = user.id
+      user = User.where(email: r["email"]).first
       {
         success: true,
         message: "Login successful!",

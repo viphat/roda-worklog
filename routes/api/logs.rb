@@ -37,7 +37,7 @@ App::Main.route('logs', 'api') do |r|
     }
   end
 
-  r.destroy ':id' do |id|
+  r.delete ':id' do |id|
     token = r.env["HTTP_AUTHORIZATION"]
     access_token_validate(token.gsub('Bearer ',''))
     require_current_user
@@ -69,8 +69,7 @@ App::Main.route('logs', 'api') do |r|
     # }
 
     halt_request(400, { error: "Yêu cầu không hợp lệ." }) if r["text"].nil?
-    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if r["token"] != SLACK_TOKEN_FOR_POST_LOGS
-    response.status = 200
+    halt_request(400, { error: "Yêu cầu không hợp lệ." }) unless r["token"] == SLACK_TOKEN_FOR_POST_LOGS
     slack_user_id = r["user_id"]
     user = User.find_by_slack_user_id(slack_user_id)
     halt_request(400, { error: "Yêu cầu không hợp lệ." }) if user.nil?
@@ -79,9 +78,9 @@ App::Main.route('logs', 'api') do |r|
       user_id: user.id
     )
     halt_request(500, { error: "Internal Server Error." }) if log.nil?
+    response.status = 200
     {
-      text: "Server đã nhận được worklog của bạn.\n
-      ID của worklog vừa tạo là **#{log.id}**.\n"
+      text: "Server đã nhận được worklog của bạn.\nID của worklog vừa tạo là **#{log.id}**.\n"
     }
   end
 end
