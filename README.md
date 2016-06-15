@@ -27,7 +27,7 @@ nohup bundle exec puma -C puma.rb -e production >> log/production.log 2>&1 &
 Use Whenever to run scheduled jobs
 
 ```
-whenever -W
+whenever -w
 ```
 
 #### Development
@@ -59,6 +59,10 @@ PG_HOST="127.0.0.1"
 WORKLOG_DATABASE="worklogs"
 SLACK\_TOKEN\_FOR\_VERIFY="YOUR\_SLACK\_COMMAND\_TOKEN"
 SLACK\_TOKEN\_FOR\_POST\_LOGS="YOUR\_SLACK\_COMMAND\_TOKEN"
+SMTP_HOST='smtp.gmail.com'
+SMTP_USER='xxxx@gmail.com'
+SMTP_PASSWORD='xxxx'
+SMTP_PORT='587'
 ```
 
 ### Tham khảo
