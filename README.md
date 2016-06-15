@@ -24,6 +24,12 @@ Hoặc sử dụng cú pháp của **Puma**:
 nohup bundle exec puma -C puma.rb -e production >> log/production.log 2>&1 &
 ```
 
+Use Whenever to run scheduled jobs
+
+```
+whenever -W
+```
+
 #### Development
 
 Auto reload khi codebase của Project có thay đổi - **rerun**:
