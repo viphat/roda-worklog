@@ -1,7 +1,7 @@
 Sequel.seed(:development, :production, :test) do
   def run
     team = Team.create(
-      name: "Developer Team"
+      name: "Developers Team"
     )
 
     User.create(

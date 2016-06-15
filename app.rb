@@ -46,6 +46,7 @@ module App
   class Main < Roda
     include BaseHelpers
     include CurrentUser
+    include MailHelpers
     raise 'Ruby should be >= 2.3' unless RUBY_VERSION.to_f >= 2.3
     use Rack::Session::Cookie, :secret => ENV.fetch("WORKLOG_SECRET")
     use Rack::Protection, except: :http_origin
@@ -103,14 +104,13 @@ module App
       r.on "mailer" do
         r.is 'preview' do
           response['Content-Type'] = 'text/html'
-          @begin_date = (Time.now.beginning_of_day) - 7.days
-          @end_date = Time.now.end_of_day
+          get_users_logs
+
           render('mailer/weekly', engine: "slim", views: 'views')
         end
 
         r.mail "weekly" do |data|
-          @begin_date = (Time.now.beginning_of_day) - 7.days
-          @end_date = Time.now.end_of_day
+          get_users_logs
           from 'success@ubrand.cool'
           to 'viphat@ubc.vn'
           subject "Báo cáo hàng tuần từ #{@begin_date.strftime('%d-%m-%Y')} đến ngày #{@end_date.strftime('%d-%m-%Y')}"

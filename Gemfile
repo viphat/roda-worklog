@@ -20,6 +20,7 @@ gem 'awesome_print'
 gem 'mail'
 gem 'bcrypt'
 gem 'activesupport'
+gem 'whenever', :require => false
 
 group :development, :test do
   gem 'rerun', require: false

@@ -37,9 +37,18 @@ html[xmlns="http://www.w3.org/1999/xhtml"]
                             tr
                               td.body-copy[align="left" style="padding-top:30px;padding-bottom:30px;padding-right:0;padding-left:0;font-family:Courier, 'Courier New';font-size:15px;mso-line-height-rule:exactly;text-align:left;font-weight:100;line-height:24px;color:#444444;"]
                                 | Báo cáo tổng hợp Worklog của Dev Team từ ngày <strong>#{@begin_date}</strong> đến ngày <strong>#{@end_date}</strong>
-                            tr
-                              td.sub-copy[style="font-family:Courier, 'Courier New';font-size:15px;mso-line-height-rule:exactly;text-align:left;font-weight:100;line-height:24px;color:#444444;font-style:italic;padding-top:25px;padding-bottom:25px;padding-right:40px;padding-left:40px;border-top-width:2px;border-top-style:solid;border-top-color:#444444;border-bottom-width:2px;border-bottom-style:solid;border-bottom-color:#444444;"]
-                                |  “At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti.”
+                            - @users.each do |user|
+                              tr
+                                td.sub-copy[style="font-family:Courier, 'Courier New';font-size:15px;mso-line-height-rule:exactly;text-align:left;font-weight:100;line-height:24px;color:#444444;font-style:italic;padding-top:25px;padding-bottom:25px;padding-right:40px;padding-left:40px;border-top-width:2px;border-top-style:solid;border-top-color:#444444;border-bottom-width:1px;border-bottom-style:solid;border-bottom-color:#444444;"]
+                                  p
+                                    | <strong>#{user.name}</strong>
+                                  ul
+                                    - @logs = Log.where(user_id: user.id).where('created_at >= ? AND created_at <= ?', @begin_date, @end_date).all
+                                    - @logs.each do |log|
+                                      li
+                                        strong
+                                          = log.created_at.strftime("%d-%m-%Y %H:%M:%S")
+                                        |&nbsp;- #{log.content}
                 tr
                   td.spacer[height="30" style="font-size:0;line-height:0;"]
                     |  
