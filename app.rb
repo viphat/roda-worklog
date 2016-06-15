@@ -8,6 +8,8 @@ require 'rack/protection'
 require 'bcrypt'
 require 'logger'
 require 'awesome_print'
+require 'active_support/all'
+require 'mail'
 
 Dotenv.load!
 
@@ -21,6 +23,14 @@ begin
   DB = Sequel.connect(adapter: "postgres", database: database, host: host, user: user, password: password)
 rescue Exception
   DB = Sequel.connect(adapter: "postgres", host: host, user: user, password: password)
+end
+
+Mail.defaults do
+  delivery_method :smtp, address: ENV.fetch('SMTP_HOST'),
+                                       port: ENV.fetch('SMTP_PORT'),
+                                       user_name: ENV.fetch('SMTP_USER'),
+                                       password: ENV.fetch('SMTP_PASSWORD'),
+                                       enable_ssl: true
 end
 
 Sequel.extension :seed
@@ -44,6 +54,7 @@ module App
     # plugin :csrf - Disable CSRF due to API
     plugin :render, engine: "slim"
     plugin :render, engine: "jbuilder", ext: 'json.jbuilder', views: 'views/api', cache: true
+    plugin :mailer, :content_type=>'text/html'
     plugin :multi_route
     plugin :json
     plugin :all_verbs
@@ -88,6 +99,29 @@ module App
       r.multi_route do
         halt_request( 404, { error: 'Resource Not Found'} )
       end
+
+      r.on "mailer" do
+        r.is 'preview' do
+          response['Content-Type'] = 'text/html'
+          @begin_date = (Time.now.beginning_of_day) - 7.days
+          @end_date = Time.now.end_of_day
+          render('mailer/weekly', engine: "slim", views: 'views')
+        end
+
+        r.mail "weekly" do |data|
+          @begin_date = (Time.now.beginning_of_day) - 7.days
+          @end_date = Time.now.end_of_day
+          from 'success@ubrand.cool'
+          to 'viphat@ubc.vn'
+          subject "Báo cáo hàng tuần từ #{@begin_date.strftime('%d-%m-%Y')} đến ngày #{@end_date.strftime('%d-%m-%Y')}"
+          render('mailer/weekly', engine: "slim", views: 'views')
+        end
+
+        r.is 'send_mail' do
+          App::Main.sendmail("/mailer/weekly", nil)
+        end
+      end
+
       r.root do
         response.status = 200
         {

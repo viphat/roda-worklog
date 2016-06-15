@@ -17,7 +17,9 @@ gem 'puma'
 gem 'tilt-jbuilder'
 # gem 'mutations'
 gem 'awesome_print'
+gem 'mail'
 gem 'bcrypt'
+gem 'activesupport'
 
 group :development, :test do
   gem 'rerun', require: false

@@ -45,7 +45,7 @@ class User < Sequel::Model
   def before_destroy
     super
     # Chỉ cho phép xóa Log trong 1 ngày gần nhất
-    return false unless self.created_at.to_i + 86400 > Time.now
+    return false unless (self.created_at + 1.days) > Time.now
   end
 
 private
