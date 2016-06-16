@@ -28,6 +28,7 @@ App::Main.route('logs', 'api') do |r|
     require_current_user
     log = Log.where(id: id, user_id: @current_user.id ).first
     halt_request(400, { error: "Yêu cầu không hợp lệ." }) if log.nil?
+    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if log.created_at < Time.now.beginning_of_day
     log[:content] = r["content"]
     halt_request(400, { error: "Yêu cầu cập nhật worklog không thành công!" }) unless log.save_changes
     response.status = 200
@@ -43,6 +44,7 @@ App::Main.route('logs', 'api') do |r|
     require_current_user
     log = Log.where(id: id, user_id: @current_user.id).first
     halt_request(400, { error: "Yêu cầu không hợp lệ." }) if log.nil?
+    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if log.created_at < Time.now.beginning_of_day
     halt_request(400, { error: "Yêu cầu xóa worklog thất bại." }) unless log.destroy
     response.status = 200
     {
@@ -80,7 +82,7 @@ App::Main.route('logs', 'api') do |r|
     halt_request(500, { error: "Internal Server Error." }) if log.nil?
     response.status = 200
     {
-      text: "Server đã nhận được worklog của bạn.\nID của worklog vừa tạo là **#{log.id}**.\n"
+      text: "Server đã nhận được worklog của bạn.\nID của *worklog* vừa tạo là *#{log.id}*.\nBạn có thể edit/delete worklog bằng cách gửi PUT/DELETE request với params là ID.\n(Chỉ được cập nhật/thay đổi worklog tạo ra trong ngày)"
     }
   end
 end
