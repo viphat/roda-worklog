@@ -18,15 +18,18 @@ App::Main.route('logs', 'api') do |r|
     }
   end
 
-  r.post ':id/update' do |id|
+  r.post 'update' do
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) if r["text"].nil?
     halt_request(400, { text: "Yêu cầu không hợp lệ." }) unless r["token"] == SLACK_TOKEN_FOR_UPDATE_LOG
     slack_user_id = r["user_id"]
     user = User.find_by_slack_user_id(slack_user_id)
     halt_request(400, { text: "Yêu cầu không hợp lệ." }) if user.nil?
+    id = r["text"].split(" ").first
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) if id.nil?
     log = Log.where(id: id, user_id: user.id ).first
     halt_request(400, { error: "Yêu cầu không hợp lệ." }) if log.nil?
     halt_request(400, { error: "Yêu cầu không hợp lệ." }) if log.created_at < Time.now.beginning_of_day
-    log[:content] = r["text"]
+    log[:content] = r["text"].split(" ").drop(1).join(" ")
     halt_request(400, { error: "Yêu cầu cập nhật worklog không thành công!" }) unless log.save_changes
     response.status = 200
     {
@@ -34,9 +37,11 @@ App::Main.route('logs', 'api') do |r|
     }
   end
 
-  r.post ':id/delete' do |id|
+  r.post 'delete' do
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) if r["text"].nil?
     halt_request(400, { text: "Yêu cầu không hợp lệ." }) unless r["token"] == SLACK_TOKEN_FOR_UPDATE_LOG
     slack_user_id = r["user_id"]
+    id = r["text"].split(" ").join(" ").to_i
     user = User.find_by_slack_user_id(slack_user_id)
     halt_request(400, { text: "Yêu cầu không hợp lệ." }) if user.nil?
     log = Log.where(id: id, user_id: user.id ).first
