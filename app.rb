@@ -60,7 +60,7 @@ module App
     plugin :json
     plugin :all_verbs
     plugin :environments
-    plugin :head # http://mrcook.uk/why-enable-roda-head-plugin
+    plugin :head # Why-enable-roda-head-plugin
     plugin :default_headers, 'Content-Type'=>'application/json'
     plugin :error_handler do |e|
       response.status = 500

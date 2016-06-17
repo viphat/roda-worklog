@@ -1,24 +1,36 @@
 App::Main.route('logs', 'api') do |r|
-  r.get do |id|
-    token = r.env["HTTP_AUTHORIZATION"]
-    access_token_validate(token.gsub('Bearer ',''))
-    require_current_user
-    logs = Log.where(user_id: @current_user.id).first(10)
-    results = []
+  r.get do
+    # token = r.env["HTTP_AUTHORIZATION"]
+    # access_token_validate(token.gsub('Bearer ',''))
+    # require_current_user
+
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) unless r["token"] == SLACK_TOKEN_FOR_LATEST_LOGS
+    slack_user_id = r["user_id"]
+    user = User.find_by_slack_user_id(slack_user_id)
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) if user.nil?
+    logs = Log.where(user_id: @user.id).order(:created_at).last(10)
+    halt_request(200, { text: "Bạn chưa ghi nhận worklog nào." }) if logs.nil?
+    # results = []
+    built_text_arr = ["Top 10 worklogs gần nhất của bạn là:"]
     logs.each do |log|
-      results.push(
-        {
-          id: log.id,
-          user_id: log.user_id,
-          content: log.content,
-          created_at: log.created_at
-        }
-      )
+      # results.push(
+      #   {
+      #     id: log.id,
+      #     user_id: log.user_id,
+      #     content: log.content,
+      #     created_at: log.created_at
+      #   }
+      # )
+      built_text_arr.push("#{log.id}- *#{log.created_at}* - #{log.content}")
     end
+
+    halt_request(200, { text: "Bạn chưa ghi nhận worklog nào." }) if built_text_arr.length == 0
+
     response.status = 200
     {
-      success: true,
-      logs: results
+      # success: true,
+      # logs: results
+      text: built_text_arr.join("\n")
     }
   end
 
@@ -70,19 +82,19 @@ App::Main.route('logs', 'api') do |r|
     #   id: log.id
     # }
 
-    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if r["text"].nil?
-    halt_request(400, { error: "Yêu cầu không hợp lệ." }) unless r["token"] == SLACK_TOKEN_FOR_POST_LOGS
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) if r["text"].nil?
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) unless r["token"] == SLACK_TOKEN_FOR_CREATE_LOG
     slack_user_id = r["user_id"]
     user = User.find_by_slack_user_id(slack_user_id)
-    halt_request(400, { error: "Yêu cầu không hợp lệ." }) if user.nil?
+    halt_request(400, { text: "Yêu cầu không hợp lệ." }) if user.nil?
     log = Log.create(
       content: r["text"],
       user_id: user.id
     )
-    halt_request(500, { error: "Internal Server Error." }) if log.nil?
+    halt_request(500, { text: "Internal Server Error." }) if log.nil?
     response.status = 200
     {
-      text: "Server đã nhận được worklog của bạn.\nID của *worklog* vừa tạo là *#{log.id}*.\nBạn có thể edit/delete worklog bằng cách gửi PUT/DELETE request với params là ID.\n(Chỉ được cập nhật/thay đổi worklog tạo ra trong ngày)"
+      text: "Server đã nhận được worklog của bạn.\nID của *worklog* vừa tạo là *#{log.id}*.\nBạn có thể cập nhật/xóa các worklogs được tạo ra trong ngày."
     }
   end
 end

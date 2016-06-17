@@ -15,7 +15,7 @@ App::Main.route('users', 'api') do |r|
     email = input.split(" ")[0]
     password = input.split(" ")[1]
     user = User.authenticate(email, password)
-    if r['token'] == SLACK_TOKEN_FOR_VERIFY && user
+    if r['token'] == SLACK_TOKEN_FOR_VERIFY_USER && user
       user.update_slack_user_id(slack_user_id)
       {
         text: "Xác thực thành công. Bạn có thể gửi worklog bằng lệnh /log!"
