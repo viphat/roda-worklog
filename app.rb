@@ -105,20 +105,19 @@ module App
         r.is 'preview' do
           response['Content-Type'] = 'text/html'
           get_users_logs
-
-          render('mailer/weekly', engine: "slim", views: 'views')
+          render('mailer/daily', engine: "slim", views: 'views')
         end
 
-        r.mail "weekly" do |data|
+        r.mail "daily" do |data|
           get_users_logs
           from 'success@ubrand.cool'
           to 'viphat@ubc.vn'
-          subject "Báo cáo hàng tuần từ #{@begin_date.strftime('%d-%m-%Y')} đến ngày #{@end_date.strftime('%d-%m-%Y')}"
-          render('mailer/weekly', engine: "slim", views: 'views')
+          subject "Báo cáo UBrand Worklog ngày #{@date_str}"
+          render('mailer/daily', engine: "slim", views: 'views')
         end
 
         r.is 'send_mail' do
-          App::Main.sendmail("/mailer/weekly", nil)
+          App::Main.sendmail("/mailer/daily", nil)
         end
       end
 
