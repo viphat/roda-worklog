@@ -21,7 +21,7 @@ App::Main.route('logs', 'api') do |r|
       #     created_at: log.created_at
       #   }
       # )
-      built_text_arr.push("#{log.id}- *#{log.created_at}* - #{log.content}")
+      built_text_arr.push("#{log.id}- *#{log.created_at.strftime('%d-%m-%Y %H:%M:%S')}* - #{log.content}")
     end
 
     halt_request(200, { text: "Bạn chưa ghi nhận worklog nào." }) if built_text_arr.length == 0
